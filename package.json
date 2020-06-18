@@ -1,0 +1,19 @@
+{
+  "name": "microservices",
+  "version": "0.1.0",
+  "description": "Praxisprojekt für Microservices Vorlesung",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wodyy666/Microservices.git"
+  },
+  "author": "9123121",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wodyy666/Microservices/issues"
+  },
+  "homepage": "https://github.com/wodyy666/Microservices#readme"
+}

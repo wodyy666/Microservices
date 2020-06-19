@@ -22,28 +22,14 @@ const https = require('https');
 const util = require('util');
 const zlib = require('zlib');
 
-const readFile = util.promisify(fs.readFile);
+const { data } = require('../config/tensorflow.js');
 
-// MNIST data constants:
-const BASE_URL = 'https://storage.googleapis.com/cvdf-datasets/mnist/';
-const TRAIN_IMAGES_FILE = 'train-images-idx3-ubyte';
-const TRAIN_LABELS_FILE = 'train-labels-idx1-ubyte';
-const TEST_IMAGES_FILE = 't10k-images-idx3-ubyte';
-const TEST_LABELS_FILE = 't10k-labels-idx1-ubyte';
-const IMAGE_HEADER_MAGIC_NUM = 2051;
-const IMAGE_HEADER_BYTES = 16;
-const IMAGE_HEIGHT = 28;
-const IMAGE_WIDTH = 28;
-const IMAGE_FLAT_SIZE = IMAGE_HEIGHT * IMAGE_WIDTH;
-const LABEL_HEADER_MAGIC_NUM = 2049;
-const LABEL_HEADER_BYTES = 8;
-const LABEL_RECORD_BYTE = 1;
-const LABEL_FLAT_SIZE = 10;
+const readFile = util.promisify(fs.readFile);
 
 // Downloads a test file only once and returns the buffer for the file.
 async function fetchOnceAndSaveToDiskWithBuffer(filename) {
 	return new Promise(resolve => {
-		const url = `${BASE_URL}${filename}.gz`;
+		const url = `${data.MNISTHost}${filename}.gz`;
 		if (fs.existsSync(filename)) {
 			resolve(readFile(filename));
 			return;
@@ -72,13 +58,12 @@ function loadHeaderValues(buffer, headerLength) {
 async function loadImages(filename) {
 	const buffer = await fetchOnceAndSaveToDiskWithBuffer(filename);
 
-	const headerBytes = IMAGE_HEADER_BYTES;
-	const recordBytes = IMAGE_HEIGHT * IMAGE_WIDTH;
+	const headerBytes = data.imageHeaderSize;
+	const recordBytes = data.imageHeight * data.imageWidth;
 
 	const headerValues = loadHeaderValues(buffer, headerBytes);
-	assert.equal(headerValues[0], IMAGE_HEADER_MAGIC_NUM);
-	assert.equal(headerValues[2], IMAGE_HEIGHT);
-	assert.equal(headerValues[3], IMAGE_WIDTH);
+	assert.equal(headerValues[2], data.imageHeight);
+	assert.equal(headerValues[3], data.imageWidth);
 
 	const images = [];
 	let index = headerBytes;
@@ -99,11 +84,10 @@ async function loadImages(filename) {
 async function loadLabels(filename) {
 	const buffer = await fetchOnceAndSaveToDiskWithBuffer(filename);
 
-	const headerBytes = LABEL_HEADER_BYTES;
-	const recordBytes = LABEL_RECORD_BYTE;
+	const headerBytes = data.labelHeaderSize;
+	const recordBytes = data.labelSize;
 
 	const headerValues = loadHeaderValues(buffer, headerBytes);
-	assert.equal(headerValues[0], LABEL_HEADER_MAGIC_NUM);
 
 	const labels = [];
 	let index = headerBytes;
@@ -132,8 +116,8 @@ class MnistDataset {
 	/** Loads training and test data. */
 	async loadData() {
 		this.dataset = await Promise.all([
-			loadImages(TRAIN_IMAGES_FILE), loadLabels(TRAIN_LABELS_FILE),
-			loadImages(TEST_IMAGES_FILE), loadLabels(TEST_LABELS_FILE)
+			loadImages(data.trainImages), loadLabels(data.trainLabels),
+			loadImages(data.testImages), loadLabels(data.testLabels)
 		]);
 		this.trainSize = this.dataset[0].length;
 		this.testSize = this.dataset[2].length;
@@ -164,7 +148,7 @@ class MnistDataset {
 			`the number of labels (${this.dataset[labelsIndex].length})`);
 
 		// Only create one big array to hold batch of images.
-		const imagesShape = [size, IMAGE_HEIGHT, IMAGE_WIDTH, 1];
+		const imagesShape = [size, data.imageHeight, data.imageWidth, 1];
 		const images = new Float32Array(tf.util.sizeFromShape(imagesShape));
 		const labels = new Int32Array(tf.util.sizeFromShape([size, 1]));
 
@@ -173,13 +157,13 @@ class MnistDataset {
 		for (let i = 0; i < size; ++i) {
 			images.set(this.dataset[imagesIndex][i], imageOffset);
 			labels.set(this.dataset[labelsIndex][i], labelOffset);
-			imageOffset += IMAGE_FLAT_SIZE;
+			imageOffset += data.imagePixelCount;
 			labelOffset += 1;
 		}
 
 		return {
 			images: tf.tensor4d(images, imagesShape),
-			labels: tf.oneHot(tf.tensor1d(labels, 'int32'), LABEL_FLAT_SIZE).toFloat()
+			labels: tf.oneHot(tf.tensor1d(labels, 'int32'), data.labelCount).toFloat()
 		};
 	}
 }

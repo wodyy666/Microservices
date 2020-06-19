@@ -5,7 +5,7 @@ const path = require('path');
 
 const data = require('./data');
 //const model = require('./model');
-const model = tf.loadLayersModel('file://C:/Users/limbamar/OneDrive - diconium GmbH/Desktop/Microservices/test/model.json').then(model => {
+const model = tf.loadLayersModel('file://C:/Users/limbamar/OneDrive - diconium GmbH/Desktop/Microservices/model/model.json').then(model => {
 	fs.readFile(path.join(__dirname, 'index.js'), async function(error, data) {
 		if(error) throw error;
 

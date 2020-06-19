@@ -2,7 +2,7 @@
   "name": "microservices",
   "version": "0.1.0",
   "description": "Praxisprojekt für Microservices Vorlesung",
-  "main": "index.js",
+  "main": "helpers/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

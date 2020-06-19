@@ -1,4 +1,4 @@
-const tf = require('@tensorflow/tfjs-node');
+const tf = require('@tensorflow/tfjs-node/dist/index');
 const argparse = require('argparse');
 const fs = require('fs');
 const path = require('path');

@@ -2,6 +2,7 @@ var config = {};
 
 config.data = {
 	MNISTHost: 'https://storage.googleapis.com/cvdf-datasets/mnist/',
+	datasetLocation: '../MNISTDataset',
 	trainImages: 'train-images-idx3-ubyte',
 	trainLabels: 'train-labels-idx1-ubyte',
 	testImages: 't10k-images-idx3-ubyte',

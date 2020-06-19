@@ -1,91 +1,75 @@
 const tf = require('@tensorflow/tfjs-node/dist/index');
 const fs = require('fs');
-const https = require('https');
-const util = require('util');
-const zlib = require('zlib');
+const path = require('path');
 
 const { data } = require('../config/tensorflow.js');
 
-const readFile = util.promisify(fs.readFile);
-
-// Downloads a test file only once and returns the buffer for the file.
-async function fetchOnceAndSaveToDiskWithBuffer(filename) {
+async function loadImages(filename) {
 	return new Promise(resolve => {
-		const url = `${data.MNISTHost}${filename}.gz`;
-		if (fs.existsSync(filename)) {
-			resolve(readFile(filename));
-			return;
-		}
-		const file = fs.createWriteStream(filename);
-		console.log(`  * Downloading from: ${url}`);
-		https.get(url, (response) => {
-			const unzip = zlib.createGunzip();
-			response.pipe(unzip).pipe(file);
-			unzip.on('end', () => {
-				resolve(readFile(filename));
-			});
+		var filePath = path.join(__dirname, data.datasetLocation, filename);
+
+		fs.readFile(filePath, (error, buffer) => {
+			if (error) throw error;
+
+			const pixelCount = data.imagePixelCount;
+
+			const images = [];
+			let index = data.imageHeaderSize;
+			while (index < buffer.byteLength) {
+				const array = new Float32Array(pixelCount);
+				for (let i = 0; i < pixelCount; i++) {
+					// Normalize the pixel values into the 0-1 interval, from
+					// the original 0-255 interval.
+					array[i] = buffer.readUInt8(index++) / 255;
+				}
+				images.push(array);
+			}
+
+			resolve(images);
 		});
 	});
 }
 
-async function loadImages(filename) {
-	const buffer = await fetchOnceAndSaveToDiskWithBuffer(filename);
-
-	const headerBytes = data.imageHeaderSize;
-	const recordBytes = data.imageHeight * data.imageWidth;
-
-	const images = [];
-	let index = headerBytes;
-	while (index < buffer.byteLength) {
-		const array = new Float32Array(recordBytes);
-		for (let i = 0; i < recordBytes; i++) {
-			// Normalize the pixel values into the 0-1 interval, from
-			// the original 0-255 interval.
-			array[i] = buffer.readUInt8(index++) / 255;
-		}
-		images.push(array);
-	}
-
-	return images;
-}
-
 async function loadLabels(filename) {
-	const buffer = await fetchOnceAndSaveToDiskWithBuffer(filename);
+	return new Promise(resolve => {
+		var filePath = path.join(__dirname, data.datasetLocation, filename);
 
-	const headerBytes = data.labelHeaderSize;
-	const recordBytes = data.labelSize;
+		fs.readFile(filePath, (error, buffer) => {
+			if (error) throw error;
 
-	const labels = [];
-	let index = headerBytes;
-	while (index < buffer.byteLength) {
-		const array = new Int32Array(recordBytes);
-		for (let i = 0; i < recordBytes; i++) {
-			array[i] = buffer.readUInt8(index++);
-		}
-		labels.push(array);
-	}
+			const recordBytes = data.labelSize;
+			const labels = [];
+			let index = data.labelHeaderSize;
 
-	return labels;
+			while (index < buffer.byteLength) {
+				const array = new Int32Array(recordBytes);
+				for (let i = 0; i < recordBytes; i++) {
+					array[i] = buffer.readUInt8(index++);
+				}
+				labels.push(array);
+			}
+
+			resolve(labels);
+		});
+	});
 }
 
 async function loadData() {
-	this.dataset = await Promise.all([
+	return await Promise.all([
 		loadImages(data.trainImages), loadLabels(data.trainLabels),
 		loadImages(data.testImages), loadLabels(data.testLabels)
 	]);
-	this.trainSize = this.dataset[0].length;
-	this.testSize = this.dataset[2].length;
 }
 
-function getTrainData() {
-	return this.getData_(true);
+function getTrainData(dataset) {
+	return getData_(true, dataset);
 }
 
-function getTestData() {
-	return this.getData_(false);
+function getTestData(dataset) {
+	return getData_(false, dataset);
 }
 
-function getData_(isTrainingData) {
+function getData_(isTrainingData, dataset) {
 	let imagesIndex;
 	let labelsIndex;
 	if (isTrainingData) {
@@ -95,11 +79,11 @@ function getData_(isTrainingData) {
 		imagesIndex = 2;
 		labelsIndex = 3;
 	}
-	const size = this.dataset[imagesIndex].length;
+	const size = dataset[imagesIndex].length;
 	tf.util.assert(
-		this.dataset[labelsIndex].length === size,
+		dataset[labelsIndex].length === size,
 		`Mismatch in the number of images (${size}) and ` +
-		`the number of labels (${this.dataset[labelsIndex].length})`);
+		`the number of labels (${dataset[labelsIndex].length})`);
 
 	// Only create one big array to hold batch of images.
 	const imagesShape = [size, data.imageHeight, data.imageWidth, 1];
@@ -109,8 +93,8 @@ function getData_(isTrainingData) {
 	let imageOffset = 0;
 	let labelOffset = 0;
 	for (let i = 0; i < size; ++i) {
-		images.set(this.dataset[imagesIndex][i], imageOffset);
-		labels.set(this.dataset[labelsIndex][i], labelOffset);
+		images.set(dataset[imagesIndex][i], imageOffset);
+		labels.set(dataset[labelsIndex][i], labelOffset);
 		imageOffset += data.imagePixelCount;
 		labelOffset += 1;
 	}

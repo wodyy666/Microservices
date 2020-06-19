@@ -1,22 +1,4 @@
-/**
- * @license
- * Copyright 2018 Google LLC. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * =============================================================================
- */
-
 const tf = require('@tensorflow/tfjs-node/dist/index');
-const assert = require('assert');
 const fs = require('fs');
 const https = require('https');
 const util = require('util');
@@ -46,24 +28,11 @@ async function fetchOnceAndSaveToDiskWithBuffer(filename) {
 	});
 }
 
-function loadHeaderValues(buffer, headerLength) {
-	const headerValues = [];
-	for (let i = 0; i < headerLength / 4; i++) {
-		// Header data is stored in-order (aka big-endian)
-		headerValues[i] = buffer.readUInt32BE(i * 4);
-	}
-	return headerValues;
-}
-
 async function loadImages(filename) {
 	const buffer = await fetchOnceAndSaveToDiskWithBuffer(filename);
 
 	const headerBytes = data.imageHeaderSize;
 	const recordBytes = data.imageHeight * data.imageWidth;
-
-	const headerValues = loadHeaderValues(buffer, headerBytes);
-	assert.equal(headerValues[2], data.imageHeight);
-	assert.equal(headerValues[3], data.imageWidth);
 
 	const images = [];
 	let index = headerBytes;
@@ -77,7 +46,6 @@ async function loadImages(filename) {
 		images.push(array);
 	}
 
-	assert.equal(images.length, headerValues[1]);
 	return images;
 }
 
@@ -86,8 +54,6 @@ async function loadLabels(filename) {
 
 	const headerBytes = data.labelHeaderSize;
 	const recordBytes = data.labelSize;
-
-	const headerValues = loadHeaderValues(buffer, headerBytes);
 
 	const labels = [];
 	let index = headerBytes;
@@ -99,7 +65,6 @@ async function loadLabels(filename) {
 		labels.push(array);
 	}
 
-	assert.equal(labels.length, headerValues[1]);
 	return labels;
 }
 

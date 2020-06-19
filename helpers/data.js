@@ -68,69 +68,61 @@ async function loadLabels(filename) {
 	return labels;
 }
 
-/** Helper class to handle loading training and test data. */
-class MnistDataset {
-	constructor() {
-		this.dataset = null;
-		this.trainSize = 0;
-		this.testSize = 0;
-		this.trainBatchIndex = 0;
-		this.testBatchIndex = 0;
-	}
-
-	/** Loads training and test data. */
-	async loadData() {
-		this.dataset = await Promise.all([
-			loadImages(data.trainImages), loadLabels(data.trainLabels),
-			loadImages(data.testImages), loadLabels(data.testLabels)
-		]);
-		this.trainSize = this.dataset[0].length;
-		this.testSize = this.dataset[2].length;
-	}
-
-	getTrainData() {
-		return this.getData_(true);
-	}
-
-	getTestData() {
-		return this.getData_(false);
-	}
-
-	getData_(isTrainingData) {
-		let imagesIndex;
-		let labelsIndex;
-		if (isTrainingData) {
-			imagesIndex = 0;
-			labelsIndex = 1;
-		} else {
-			imagesIndex = 2;
-			labelsIndex = 3;
-		}
-		const size = this.dataset[imagesIndex].length;
-		tf.util.assert(
-			this.dataset[labelsIndex].length === size,
-			`Mismatch in the number of images (${size}) and ` +
-			`the number of labels (${this.dataset[labelsIndex].length})`);
-
-		// Only create one big array to hold batch of images.
-		const imagesShape = [size, data.imageHeight, data.imageWidth, 1];
-		const images = new Float32Array(tf.util.sizeFromShape(imagesShape));
-		const labels = new Int32Array(tf.util.sizeFromShape([size, 1]));
-
-		let imageOffset = 0;
-		let labelOffset = 0;
-		for (let i = 0; i < size; ++i) {
-			images.set(this.dataset[imagesIndex][i], imageOffset);
-			labels.set(this.dataset[labelsIndex][i], labelOffset);
-			imageOffset += data.imagePixelCount;
-			labelOffset += 1;
-		}
-
-		return {
-			images: tf.tensor4d(images, imagesShape),
-			labels: tf.oneHot(tf.tensor1d(labels, 'int32'), data.labelCount).toFloat()
-		};
-	}
+async function loadData() {
+	this.dataset = await Promise.all([
+		loadImages(data.trainImages), loadLabels(data.trainLabels),
+		loadImages(data.testImages), loadLabels(data.testLabels)
+	]);
+	this.trainSize = this.dataset[0].length;
+	this.testSize = this.dataset[2].length;
 }
 
-module.exports = new MnistDataset();
+function getTrainData() {
+	return this.getData_(true);
+}
+
+function getTestData() {
+	return this.getData_(false);
+}
+
+function getData_(isTrainingData) {
+	let imagesIndex;
+	let labelsIndex;
+	if (isTrainingData) {
+		imagesIndex = 0;
+		labelsIndex = 1;
+	} else {
+		imagesIndex = 2;
+		labelsIndex = 3;
+	}
+	const size = this.dataset[imagesIndex].length;
+	tf.util.assert(
+		this.dataset[labelsIndex].length === size,
+		`Mismatch in the number of images (${size}) and ` +
+		`the number of labels (${this.dataset[labelsIndex].length})`);
+
+	// Only create one big array to hold batch of images.
+	const imagesShape = [size, data.imageHeight, data.imageWidth, 1];
+	const images = new Float32Array(tf.util.sizeFromShape(imagesShape));
+	const labels = new Int32Array(tf.util.sizeFromShape([size, 1]));
+
+	let imageOffset = 0;
+	let labelOffset = 0;
+	for (let i = 0; i < size; ++i) {
+		images.set(this.dataset[imagesIndex][i], imageOffset);
+		labels.set(this.dataset[labelsIndex][i], labelOffset);
+		imageOffset += data.imagePixelCount;
+		labelOffset += 1;
+	}
+
+	return {
+		images: tf.tensor4d(images, imagesShape),
+		labels: tf.oneHot(tf.tensor1d(labels, 'int32'), data.labelCount).toFloat()
+	};
+}
+
+module.exports = {
+	loadData,
+	getTrainData,
+	getTestData,
+};

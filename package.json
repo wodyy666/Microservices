@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/wodyy666/Microservices/issues"
   },
-  "homepage": "https://github.com/wodyy666/Microservices#readme"
+  "homepage": "https://github.com/wodyy666/Microservices#readme",
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^2.0.1",
+    "argparse": "^1.0.10",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7"
+  }
 }

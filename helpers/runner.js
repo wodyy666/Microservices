@@ -1,16 +1,14 @@
+const tf = require('@tensorflow/tfjs-node/dist/index');
 const data = require('./data');
 const definedModel = require('./model');
 
-function runModel(fileName) {
-	const model = tf.loadLayersModel('file://C:/Users/limbamar/OneDrive - diconium GmbH/Desktop/Microservices/model/model.json').then(model => {
-		fs.readFile(path.join(__dirname, '..', fileName), async function(error, data) {
-			if(error) throw error;
+async function runModel(fileName) {
+	tf.loadLayersModel(
+		'file://C:/Users/limbamar/OneDrive - diconium GmbH/Desktop/Microservices/model/model.json')
+		.then(async model => {
 
-			var index = 54 // offset because of header;
-			const recordBytes = 28 * 28;
-
-			const array = new Float32Array(recordBytes);
-			for (let i = 0; i < recordBytes; i++) {
+			// might be needed later for data preperation
+			/*for (let i = 0; i < recordBytes; i++) {
 				// Normalize the pixel values into the 0-1 interval, from
 				// the original 0-255 interval.
 				if(data.readUInt8(index++) != 255) console.log(data.readUInt8(index++));
@@ -29,13 +27,18 @@ function runModel(fileName) {
 					}
 				}
 				console.log(row)
-			}
+			}*/
 
 			const imagesShape = [1, 28, 28, 1];
-			var test = model.predict(tf.tensor4d(array, imagesShape));
-			var ar = await test.array();
-			console.log(ar);
-			throw null;
-		});
+			var resultTensor = model.predict(tf.tensor4d(array, imagesShape));
+			var resultArray = await resultTensor.array();
+
+			for(let i = 0; i < 10; i++) {
+				console.log(`${i} -> ${resultArray[i].toFixed(4) * 100}%`);
+			}
 	});
 }
+
+module.exports = {
+	runModel
+};

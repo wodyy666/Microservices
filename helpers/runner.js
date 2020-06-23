@@ -43,12 +43,9 @@ async function runModel(array) {
 			let resultTensor = model.predict(
 				tf.tensor4d(typedArray, imagesShape));
 			let resultArray = await resultTensor.array();
-			//console.log(resultArray);
 
 			for (let i = 0; i < 10; i++) {
-
-				console.log(`${i} -> ${resultArray[0][i].toFixed(4) * 100}%`);
-
+				console.log(`${i} -> ${(resultArray[0][i] * 100).toFixed(2)}%`);
 			}
 		});
 }

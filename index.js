@@ -4,6 +4,7 @@ const config = require('./config/config');
 
 const app = express();
 app.use(bodyParser.json());
+app.use(express.static('public'))
 
 app.get('/', function (req, res) {
 	res.sendStatus(200);

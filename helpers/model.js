@@ -1,5 +1,5 @@
 const tf = require('@tensorflow/tfjs-node/dist/index');
-const { tensorflow } = require('../config/config.js');
+const tensorflow = require('../config/tensorflow');
 
 const model = tf.sequential();
 

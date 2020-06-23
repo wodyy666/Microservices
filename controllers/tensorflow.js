@@ -6,7 +6,6 @@ function handleTrainModel(req, res) {
 
 function handlePredict(req, res) {
 	let image = req.body.image;
-	console.log(image);
 	runner.runModel(image);
 	res.sendStatus(200);
 }

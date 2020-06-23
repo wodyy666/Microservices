@@ -8,8 +8,8 @@ let isTraining = false;
 
 async function runModel(array) {
 	tf.loadLayersModel(
-		'file://C:/Users/limbamar/OneDrive - diconium GmbH/Desktop/Microservices/model/model.json')
-		.then(async model => {
+		'file://C:/Users/limbamar/OneDrive - diconium GmbH/Desktop/Microservices/model/model.json').
+		then(async model => {
 
 			// might be needed later for data preperation
 			/*for (let i = 0; i < recordBytes; i++) {
@@ -32,15 +32,25 @@ async function runModel(array) {
 				}
 				console.log(row)
 			}*/
+			var typedArray = await new Promise(resolve => {
+				var tempArray = new Float32Array(784);
+				tempArray.set(array.slice());
+
+				resolve(tempArray);
+			});
 
 			const imagesShape = [1, 28, 28, 1];
-			let resultTensor = model.predict(tf.tensor4d(array, imagesShape));
+			let resultTensor = model.predict(
+				tf.tensor4d(typedArray, imagesShape));
 			let resultArray = await resultTensor.array();
+			//console.log(resultArray);
 
-			for(let i = 0; i < 10; i++) {
-				console.log(`${i} -> ${resultArray[i].toFixed(4) * 100}%`);
+			for (let i = 0; i < 10; i++) {
+
+				console.log(`${i} -> ${resultArray[0][i].toFixed(4) * 100}%`);
+
 			}
-	});
+		});
 }
 
 async function trainModel() {
@@ -51,7 +61,8 @@ async function trainModel() {
 	const epochs = tensorflowConfig.epochs;
 	const batchSize = tensorflowConfig.batchSize;
 
-	const {images: trainImages, labels: trainLabels} = data.getTrainData(dataset);
+	const {images: trainImages, labels: trainLabels} = data.getTrainData(
+		dataset);
 	definedModel.summary();
 
 	// Percentage of images to be used for validation, the rest is used for training
@@ -61,7 +72,7 @@ async function trainModel() {
 	await definedModel.fit(trainImages, trainLabels, {
 		epochs,
 		batchSize,
-		validationSplit
+		validationSplit,
 	});
 
 	// validating the model
@@ -70,7 +81,7 @@ async function trainModel() {
 
 	// logging progress
 	console.log(
-		`  Loss = ${evalOutput[0].dataSync()[0].toFixed(3)}; `+
+		`  Loss = ${evalOutput[0].dataSync()[0].toFixed(3)}; ` +
 		`Accuracy = ${evalOutput[1].dataSync()[0].toFixed(3)}`);
 
 	if (tensorflowConfig.modelPath != null) {
@@ -84,5 +95,5 @@ async function trainModel() {
 
 module.exports = {
 	runModel,
-	trainModel
+	trainModel,
 };

@@ -12,9 +12,9 @@ async function loadImages(filename) {
 			if (error) throw error;
 
 			const pixelCount = data.imagePixelCount;
-
 			const images = [];
 			let index = data.imageHeaderSize;
+
 			while (index < buffer.byteLength) {
 				const array = new Float32Array(pixelCount);
 				for (let i = 0; i < pixelCount; i++) {

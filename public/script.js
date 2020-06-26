@@ -68,13 +68,7 @@ async function prepareImageArray() {
 					resolve(sum);
 				});
 
-				if(sum > 2550) {
-					sum = 255;
-				}
-				else {
-					sum = 0;
-				}
-				array[((y / 5) * 28) + (x / 5)] = sum;
+				array[((y / 5) * 28) + (x / 5)] = sum / 25;
 			}
 		}
 

@@ -37,6 +37,8 @@ div {
 canvas {
     border: 1px solid;
     background-color: white;
+    width: 210px;
+    height: 210px;
 }
 
 input {

@@ -59,11 +59,11 @@ config.model = {
 		},
 		{
 			type: 'flatten',
-			dropout: 0.33
+			dropout: 0.5
 		},
 		{
 			type: 'dense',
-			units: 128,
+			units: 64,
 			activation: 'relu',
 			dropout: 0.66
 		},

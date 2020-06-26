@@ -1,6 +1,7 @@
 var canvas, ctx, flag = false,
 	currX = 0,
 	currY = 0,
+	radius = 5,
 	dot_flag = false,
 	color = 'black',
 	autoUpdate = false;
@@ -36,7 +37,7 @@ function setAutoUpdate(checkbox) {
 
 function draw() {
 	ctx.beginPath();
-	ctx.arc(currX, currY, 7, 0, 2 * Math.PI);
+	ctx.arc(currX, currY, radius, 0, 2 * Math.PI);
 	ctx.fillStyle = color;
 	ctx.fill();
 	ctx.closePath();

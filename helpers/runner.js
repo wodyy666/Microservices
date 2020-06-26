@@ -6,41 +6,24 @@ const tensorflowConfig = require('../config/tensorflow');
 
 let isTraining = false;
 
-async function runModel(array) {
+async function runModel(array, callback) {
 	tf.loadLayersModel(
-		'file://C:/Users/limbamar/OneDrive - diconium GmbH/Desktop/Microservices/model/model.json')
-		.then(async model => {
+		'file://C:/Users/limbamar/OneDrive - diconium GmbH/Desktop/Microservices/model/model.json').
+		then(async model => {
+			var typedArray = await new Promise(resolve => {
+				var tempArray = new Float32Array(784);
+				tempArray.set(array.slice());
 
-			// might be needed later for data preperation
-			/*for (let i = 0; i < recordBytes; i++) {
-				// Normalize the pixel values into the 0-1 interval, from
-				// the original 0-255 interval.
-				if(data.readUInt8(index++) != 255) console.log(data.readUInt8(index++));
-				array[i] = (data.readUInt8(index++) / 255);
-			}
-			for(var test = 0; test < 28; test++) {
-				var row = "";
-
-				for(var test2 = 0; test2 < 28; test2++) {
-					var index = test2 * test;
-					if(array[index] != 0) {
-						row += '-';
-					}
-					else {
-						row += 'H';
-					}
-				}
-				console.log(row)
-			}*/
+				resolve(tempArray);
+			});
 
 			const imagesShape = [1, 28, 28, 1];
-			let resultTensor = model.predict(tf.tensor4d(array, imagesShape));
+			let resultTensor = model.predict(
+				tf.tensor4d(typedArray, imagesShape));
 			let resultArray = await resultTensor.array();
 
-			for(let i = 0; i < 10; i++) {
-				console.log(`${i} -> ${resultArray[i].toFixed(4) * 100}%`);
-			}
-	});
+			callback(resultArray[0]);
+		});
 }
 
 async function trainModel() {
@@ -51,7 +34,8 @@ async function trainModel() {
 	const epochs = tensorflowConfig.epochs;
 	const batchSize = tensorflowConfig.batchSize;
 
-	const {images: trainImages, labels: trainLabels} = data.getTrainData(dataset);
+	const {images: trainImages, labels: trainLabels} = data.getTrainData(
+		dataset);
 	definedModel.summary();
 
 	// Percentage of images to be used for validation, the rest is used for training
@@ -61,7 +45,7 @@ async function trainModel() {
 	await definedModel.fit(trainImages, trainLabels, {
 		epochs,
 		batchSize,
-		validationSplit
+		validationSplit,
 	});
 
 	// validating the model
@@ -70,7 +54,7 @@ async function trainModel() {
 
 	// logging progress
 	console.log(
-		`  Loss = ${evalOutput[0].dataSync()[0].toFixed(3)}; `+
+		`  Loss = ${evalOutput[0].dataSync()[0].toFixed(3)}; ` +
 		`Accuracy = ${evalOutput[1].dataSync()[0].toFixed(3)}`);
 
 	if (tensorflowConfig.modelPath != null) {
@@ -84,5 +68,5 @@ async function trainModel() {
 
 module.exports = {
 	runModel,
-	trainModel
+	trainModel,
 };

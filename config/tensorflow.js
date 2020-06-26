@@ -2,8 +2,8 @@ var config = {};
 
 config = {
 	modelPath: './model',
-	epochs: '20',
-	batchSize: '128'
+	epochs: 20,
+	batchSize: 128
 };
 
 config.data = {

@@ -6,6 +6,6 @@ const router = express.Router();
 
 // tensorflow routes
 router.get('/train', tensorflow.handleTrainModel);
-router.get('/predict', tensorflow.handlePredict);
+router.post('/predict', tensorflow.handlePredict);
 
 module.exports = router;

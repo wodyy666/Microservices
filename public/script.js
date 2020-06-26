@@ -40,7 +40,6 @@ function draw() {
 
 function erase() {
 	ctx.clearRect(0, 0, w, h);
-	document.getElementById('canvasimg').style.display = 'none';
 }
 
 function prepareImageArray() {
@@ -64,7 +63,6 @@ function prepareImageArray() {
 }
 
 async function predict() {
-	document.getElementById('canvasimg').style.border = '2px solid';
 	let array = await prepareImageArray();
 	sendImage(array);
 	console.log(array);

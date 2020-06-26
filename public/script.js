@@ -65,7 +65,8 @@ function prepareImageArray() {
 async function predict() {
 	let array = await prepareImageArray();
 	sendImage(array);
-	console.log(array);
+
+	document.getElementById("resultDiv").style.display = "block";
 }
 
 function sendImage(array) {
@@ -77,13 +78,22 @@ function sendImage(array) {
 
 	xhr.addEventListener("readystatechange", function() {
 		if(this.readyState === 4) {
-			console.log(this.responseText);
+			var array = JSON.parse(this.responseText);
+			setLabels(array);
 		}
 	});
 
 	xhr.open("POST", "/predict");
 	xhr.setRequestHeader("Content-Type", "application/json");
 	xhr.send(body);
+}
+
+function setLabels(array){
+	array.forEach((item, index) => {
+		var percent = (item * 100).toFixed(2);
+		document.getElementById("result" + index).value = percent;
+		document.getElementById("result" + index + "lbl").innerHTML = percent + "%";
+	});
 }
 
 function findxy(res, e) {

@@ -22,10 +22,10 @@ div {
 }
 
 #resultDiv {
-    width: 33%;
     background-color: azure;
     border-radius: 8px;
     padding: 0px;
+    display: none;
 }
 
 canvas {
@@ -51,11 +51,12 @@ input {
 }
 
 progress {
-    width: 75%;
+    width: 66%;
     height: 15%;
 }
 
 label {
     margin-right: 10px;
     margin-left: 10px;
+    width: 50px;
 }

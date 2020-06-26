@@ -3,10 +3,10 @@ var canvas, ctx, flag = false,
 	currX = 0,
 	prevY = 0,
 	currY = 0,
-	dot_flag = false;
-
-var color = 'black',
-	lineWidth = 2;
+	dot_flag = false,
+	color = 'black',
+	lineWidth = 2,
+	autoUpdate = false;
 
 function init() {
 	canvas = document.getElementById('can');
@@ -22,10 +22,19 @@ function init() {
 	}, false);
 	canvas.addEventListener('mouseup', function(e) {
 		findxy('up', e);
+		if(autoUpdate) {
+			predict();
+		}
 	}, false);
 	canvas.addEventListener('mouseout', function(e) {
 		findxy('out', e);
 	}, false);
+
+	autoUpdate = document.getElementById("checkbox").checked;
+}
+
+function setAutoUpdate(checkbox) {
+	autoUpdate = checkbox.checked;
 }
 
 function draw() {

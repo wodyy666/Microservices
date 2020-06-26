@@ -21,6 +21,12 @@ div {
     border-radius: 8px;
 }
 
+#checkboxDiv {
+    background-color: azure;
+    border-radius: 8px;
+    width: 150px;
+}
+
 #resultDiv {
     background-color: azure;
     border-radius: 8px;
@@ -45,6 +51,11 @@ input {
     border-radius: 8px;
 }
 
+#checkbox {
+    padding: 0px;
+    margin: 0px;
+}
+
 .progressDiv {
     display: block;
     width: 90%;
@@ -59,4 +70,11 @@ label {
     margin-right: 10px;
     margin-left: 10px;
     width: 50px;
+}
+
+#checkboxLbl {
+    margin-right: 0px;
+    margin-left: 0px;
+    width: 100px;
+    color: cornflowerblue;
 }

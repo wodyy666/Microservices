@@ -1,11 +1,9 @@
 var canvas, ctx, flag = false,
-	prevX = 0,
 	currX = 0,
-	prevY = 0,
 	currY = 0,
 	dot_flag = false,
 	color = 'black',
-	lineWidth = 5,
+	lineWidth = 15,
 	autoUpdate = false;
 
 function init() {
@@ -39,11 +37,9 @@ function setAutoUpdate(checkbox) {
 
 function draw() {
 	ctx.beginPath();
-	ctx.moveTo(prevX, prevY);
-	ctx.lineTo(currX, currY);
-	ctx.strokeStyle = color;
-	ctx.lineWidth = lineWidth;
-	ctx.stroke();
+	ctx.arc(currX, currY, 7, 0, 2 * Math.PI);
+	ctx.fillStyle = color;
+	ctx.fill();
 	ctx.closePath();
 }
 
@@ -55,6 +51,7 @@ async function prepareImageArray() {
 	return await new Promise(async resolve => {
 		var array = new Float32Array(28 * 28);
 		for (var y = 0; y < 140; y += 5) {
+			var row = "";
 			for (var x = 0; x < 140; x += 5) {
 				var tempArray = ctx.getImageData(x, y, 5, 5).
 					data.
@@ -67,9 +64,10 @@ async function prepareImageArray() {
 					}
 					resolve(sum);
 				});
-
+				row += sum / 25;
 				array[((y / 5) * 28) + (x / 5)] = sum / 25;
 			}
+			console.log(row);
 		}
 
 		resolve(array);
@@ -113,8 +111,6 @@ function setLabels(array) {
 
 function findxy(res, e) {
 	if (res == 'down') {
-		prevX = currX;
-		prevY = currY;
 		currX = (e.clientX - canvas.offsetLeft) / 1.5;
 		currY = (e.clientY - canvas.offsetTop) / 1.5;
 
@@ -133,8 +129,6 @@ function findxy(res, e) {
 	}
 	if (res == 'move') {
 		if (flag) {
-			prevX = currX;
-			prevY = currY;
 			currX = (e.clientX - canvas.offsetLeft) / 1.5;
 			currY = (e.clientY - canvas.offsetTop) / 1.5;
 			draw();

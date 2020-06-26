@@ -3,7 +3,6 @@ var canvas, ctx, flag = false,
 	currY = 0,
 	dot_flag = false,
 	color = 'black',
-	lineWidth = 15,
 	autoUpdate = false;
 
 function init() {
@@ -51,7 +50,6 @@ async function prepareImageArray() {
 	return await new Promise(async resolve => {
 		var array = new Float32Array(28 * 28);
 		for (var y = 0; y < 140; y += 5) {
-			var row = "";
 			for (var x = 0; x < 140; x += 5) {
 				var tempArray = ctx.getImageData(x, y, 5, 5).
 					data.
@@ -64,10 +62,8 @@ async function prepareImageArray() {
 					}
 					resolve(sum);
 				});
-				row += sum / 25;
 				array[((y / 5) * 28) + (x / 5)] = sum / 25;
 			}
-			console.log(row);
 		}
 
 		resolve(array);

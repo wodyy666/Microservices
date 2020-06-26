@@ -69,4 +69,5 @@ async function trainModel() {
 module.exports = {
 	runModel,
 	trainModel,
+	isTraining,
 };

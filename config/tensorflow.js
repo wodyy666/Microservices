@@ -2,7 +2,7 @@ var config = {};
 
 config = {
 	modelPath: './model',
-	epochs: 5,
+	epochs: 50,
 	batchSize: 128
 };
 
@@ -27,13 +27,13 @@ config.model = {
 		{
 			type: 'conv2d',
 			inputShape: [28, 28, 1],
-			filters: 16,
+			filters: 32,
 			kernelSize: 3,
 			activation: 'relu'
 		},
 		{
 			type: 'conv2d',
-			filters: 16,
+			filters: 32,
 			kernelSize: 3,
 			activation: 'relu'
 		},
@@ -43,13 +43,13 @@ config.model = {
 		},
 		{
 			type: 'conv2d',
-			filters: 8,
+			filters: 64,
 			kernelSize: 3,
 			activation: 'relu'
 		},
 		{
 			type: 'conv2d',
-			filters: 8,
+			filters: 64,
 			kernelSize: 3,
 			activation: 'relu'
 		},
@@ -59,13 +59,13 @@ config.model = {
 		},
 		{
 			type: 'flatten',
-			dropout: 0.5
+			dropout: 0.25
 		},
 		{
 			type: 'dense',
-			units: 64,
+			units: 512,
 			activation: 'relu',
-			dropout: 0.66
+			dropout: 0.5
 		},
 		{
 			type: 'result',

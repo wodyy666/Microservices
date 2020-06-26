@@ -6,13 +6,19 @@
 
     <script type="text/javascript" src="script.js">
     </script>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body onload="init()">
-    <canvas id="can" width="28" height="28" style="position:absolute;top:10%;left:10%;border:2px solid;"></canvas>
-    <div style="position:absolute;top:20%;left:43%;">Eraser</div>
-    <div style="position:absolute;top:22%;left:45%;width:15px;height:15px;background:white;border:2px solid;" id="white" onclick="color(this)"></div>
+    <div id="canvasDiv">
+    		<canvas id="can" width="28" height="28"></canvas>
+			</div>
+    </div>
     <img id="canvasimg" style="position:absolute;top:10%;left:52%;" style="display:none;">
-    <input type="button" value="save" id="btn" size="30" onclick="predict()" style="position:absolute;top:55%;left:10%;">
-    <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:55%;left:15%;">
+
+		<div id="buttonDiv">
+			<input type="button" value="save" id="btn" size="30" onclick="predict()">
+	    <input type="button" value="clear" id="clr" size="23" onclick="erase()">
+		</div>
 </body>
 </html>

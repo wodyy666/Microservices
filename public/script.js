@@ -83,7 +83,6 @@ function sendImage(array) {
 
 	let json = `{"image": [${array.toString()}]}`;
 	let body = json;
-	console.log(body);
 
 	xhr.addEventListener('readystatechange', function() {
 		if (this.readyState === 4) {

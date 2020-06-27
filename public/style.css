@@ -69,6 +69,17 @@ input {
 progress {
     width: 66%;
     height: 15%;
+    border: solid 0px;
+}
+
+progress::-webkit-progress-bar {
+    height: 15px;
+}
+
+progress::-moz-progress-bar {
+    background-image: -webkit-linear-gradient(left, cornflowerblue, indianred);
+    background-attachment: fixed;
+    background-size: contain;
 }
 
 label {

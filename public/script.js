@@ -63,7 +63,7 @@ async function prepareImageArray() {
 					}
 					resolve(sum);
 				});
-				array[((y / 5) * 28) + (x / 5)] = sum / 25;
+				array[((y / 5) * 28) + (x / 5)] = sum / 25 / 255;
 			}
 		}
 

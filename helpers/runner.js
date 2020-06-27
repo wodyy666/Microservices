@@ -58,7 +58,7 @@ async function trainModel() {
 		`Accuracy = ${evalOutput[1].dataSync()[0].toFixed(3)}`);
 
 	if (tensorflowConfig.modelPath != null) {
-		let filePath = path.join(__dirname, tensorflowConfig.modelPath);
+		let filePath = path.join(__dirname, "..", tensorflowConfig.modelPath);
 		await definedModel.save(`file://${filePath}`);
 		console.log(`Saved model to path: ${filePath}`);
 	}
@@ -69,4 +69,5 @@ async function trainModel() {
 module.exports = {
 	runModel,
 	trainModel,
+	isTraining,
 };

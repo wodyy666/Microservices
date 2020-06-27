@@ -1,0 +1,96 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Diese API wurde als Teil des \"Number Guesser\" für die Vorlesung Microservices entwickelt",
+    "version" : "1.0.0",
+    "title" : "Number Guesser API",
+    "contact" : {
+      "email" : "inf18201@lehre.dhbw-stuttgart.de"
+    },
+    "license" : {
+      "name" : "MIT License",
+      "url" : "https://github.com/wodyy666/Microservices/blob/master/LICENSE"
+    }
+  },
+  "tags" : [ {
+    "name" : "tensorflow",
+    "description" : "Aufrufe an das Backend"
+  } ],
+  "paths" : {
+    "/train" : {
+      "get" : {
+        "tags" : [ "tensorflow" ],
+        "summary" : "das Modell soll erneut trainiert werden",
+        "description" : "Dieser Aufruf kann verwendet werden, um das Modell erneut zu trainieren\n",
+        "operationId" : "trainModell",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "das Training wurde gestartet"
+          },
+          "503" : {
+            "description" : "das Modell wird bereits trainiert"
+          }
+        }
+      }
+    },
+    "/predict" : {
+      "post" : {
+        "tags" : [ "tensorflow" ],
+        "summary" : "analysiert ein Bild",
+        "description" : "Dieser Aufruf kann verwendet werden, um ein Bild an das Backend zu schicken, um es von dem Modell analysieren zu lassen.\n",
+        "operationId" : "predict",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "image",
+          "description" : "Das Bild, welches analysiert werden soll.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Image"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Das Ergebnis, als array welches für jede Zahl die zugehörige Wahrscheinlichkeit enthält",
+            "schema" : {
+              "$ref" : "#/definitions/Result"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Image" : {
+      "type" : "object",
+      "required" : [ "image" ],
+      "properties" : {
+        "image" : {
+          "type" : "array",
+          "example" : [ 0, 0, 0.45, 1, 0.01 ],
+          "items" : {
+            "type" : "number",
+            "format" : "float"
+          }
+        }
+      }
+    },
+    "Result" : {
+      "type" : "object",
+      "required" : [ "result" ],
+      "properties" : {
+        "result" : {
+          "type" : "array",
+          "example" : [ 0, 0, 0, 0, 0, 0, 0.3, 0.7, 0, 0 ],
+          "items" : {
+            "type" : "number",
+            "format" : "float"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,140 +1,94 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "description" : "This is a simple API",
+    "description" : "Diese API wurde als Teil des \"Number Guesser\" für die Vorlesung Microservices entwickelt",
     "version" : "1.0.0",
-    "title" : "Simple Inventory API",
+    "title" : "Number Guesser API",
     "contact" : {
-      "email" : "you@your-company.com"
+      "email" : "inf18201@lehre.dhbw-stuttgart.de"
     },
     "license" : {
-      "name" : "Apache 2.0",
-      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+      "name" : "MIT License",
+      "url" : "https://github.com/wodyy666/Microservices/blob/master/LICENSE"
     }
   },
   "tags" : [ {
-    "name" : "admins",
-    "description" : "Secured Admin-only calls"
-  }, {
-    "name" : "developers",
-    "description" : "Operations available to regular developers"
+    "name" : "tensorflow",
+    "description" : "Aufrufe an das Backend"
   } ],
   "paths" : {
-    "/inventory" : {
+    "/train" : {
       "get" : {
-        "tags" : [ "developers" ],
-        "summary" : "searches inventory",
-        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
-        "operationId" : "searchInventory",
+        "tags" : [ "tensorflow" ],
+        "summary" : "das Modell soll erneut trainiert werden",
+        "description" : "Dieser Aufruf kann verwendet werden, um das Modell erneut zu trainieren\n",
+        "operationId" : "trainModell",
         "produces" : [ "application/json" ],
-        "parameters" : [ {
-          "name" : "searchString",
-          "in" : "query",
-          "description" : "pass an optional search string for looking up inventory",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "skip",
-          "in" : "query",
-          "description" : "number of records to skip for pagination",
-          "required" : false,
-          "type" : "integer",
-          "minimum" : 0,
-          "format" : "int32"
-        }, {
-          "name" : "limit",
-          "in" : "query",
-          "description" : "maximum number of records to return",
-          "required" : false,
-          "type" : "integer",
-          "maximum" : 50,
-          "minimum" : 0,
-          "format" : "int32"
-        } ],
+        "parameters" : [ ],
         "responses" : {
           "200" : {
-            "description" : "search results matching criteria",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/InventoryItem"
-              }
-            }
+            "description" : "das Training wurde gestartet"
           },
-          "400" : {
-            "description" : "bad input parameter"
+          "503" : {
+            "description" : "das Modell wird bereits trainiert"
           }
         }
-      },
+      }
+    },
+    "/predict" : {
       "post" : {
-        "tags" : [ "admins" ],
-        "summary" : "adds an inventory item",
-        "description" : "Adds an item to the system",
-        "operationId" : "addInventory",
+        "tags" : [ "tensorflow" ],
+        "summary" : "analysiert ein Bild",
+        "description" : "Dieser Aufruf kann verwendet werden, um ein Bild an das Backend zu schicken, um es von dem Modell analysieren zu lassen.\n",
+        "operationId" : "predict",
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
         "parameters" : [ {
           "in" : "body",
-          "name" : "inventoryItem",
-          "description" : "Inventory item to add",
-          "required" : false,
+          "name" : "image",
+          "description" : "Das Bild, welches analysiert werden soll.",
+          "required" : true,
           "schema" : {
-            "$ref" : "#/definitions/InventoryItem"
+            "$ref" : "#/definitions/Image"
           }
         } ],
         "responses" : {
-          "201" : {
-            "description" : "item created"
-          },
-          "400" : {
-            "description" : "invalid input, object invalid"
-          },
-          "409" : {
-            "description" : "an existing item already exists"
+          "200" : {
+            "description" : "Das Ergebnis, als array welches für jede Zahl die zugehörige Wahrscheinlichkeit enthält",
+            "schema" : {
+              "$ref" : "#/definitions/Result"
+            }
           }
         }
       }
     }
   },
   "definitions" : {
-    "InventoryItem" : {
+    "Image" : {
       "type" : "object",
-      "required" : [ "id", "manufacturer", "name", "releaseDate" ],
+      "required" : [ "image" ],
       "properties" : {
-        "id" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        },
-        "name" : {
-          "type" : "string",
-          "example" : "Widget Adapter"
-        },
-        "releaseDate" : {
-          "type" : "string",
-          "format" : "date-time",
-          "example" : "2016-08-29T09:12:33.001Z"
-        },
-        "manufacturer" : {
-          "$ref" : "#/definitions/Manufacturer"
+        "image" : {
+          "type" : "array",
+          "example" : [ 0, 0, 0.45, 1, 0.01 ],
+          "items" : {
+            "type" : "number",
+            "format" : "float"
+          }
         }
       }
     },
-    "Manufacturer" : {
-      "required" : [ "name" ],
+    "Result" : {
+      "type" : "object",
+      "required" : [ "result" ],
       "properties" : {
-        "name" : {
-          "type" : "string",
-          "example" : "ACME Corporation"
-        },
-        "homePage" : {
-          "type" : "string",
-          "format" : "url",
-          "example" : "https://www.acme-corp.com"
-        },
-        "phone" : {
-          "type" : "string",
-          "example" : "408-867-5309"
+        "result" : {
+          "type" : "array",
+          "example" : [ 0, 0, 0, 0, 0, 0, 0.3, 0.7, 0, 0 ],
+          "items" : {
+            "type" : "number",
+            "format" : "float"
+          }
         }
       }
     }

@@ -13,6 +13,7 @@ Mit dem Befehl ```npm start``` kann diese Anwendung gestartet werden. Das machin
 
 ## Verwenden / Testen
 Die Anwendung sollte jetzt lokal auf dem Rechner laufen. Mit dem Browser kann man jetzt die Anwendung unter diesem Link aufrufen: http://127.0.0.1:3000/
+
 Auf der Website kann man...
 - mit seiner Maus in dem weißen Fenster eine Ziffer zeichnen. 
 - mit dem Knopf "clear" das gezeichnete wieder löschen. 

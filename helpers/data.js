@@ -2,7 +2,7 @@ const tf = require('@tensorflow/tfjs-node/dist/index');
 const fs = require('fs');
 const path = require('path');
 
-const { data } = require('../config/tensorflow.js');
+const {data} = require('../config/tensorflow.js');
 
 async function loadImages(filename) {
 	return new Promise(resolve => {
@@ -57,7 +57,7 @@ async function loadLabels(filename) {
 async function loadData() {
 	return await Promise.all([
 		loadImages(data.trainImages), loadLabels(data.trainLabels),
-		loadImages(data.testImages), loadLabels(data.testLabels)
+		loadImages(data.testImages), loadLabels(data.testLabels),
 	]);
 }
 
@@ -101,7 +101,8 @@ function getData_(isTrainingData, dataset) {
 
 	return {
 		images: tf.tensor4d(images, imagesShape),
-		labels: tf.oneHot(tf.tensor1d(labels, 'int32'), data.labelCount).toFloat()
+		labels: tf.oneHot(tf.tensor1d(labels, 'int32'), data.labelCount).
+			toFloat(),
 	};
 }
 

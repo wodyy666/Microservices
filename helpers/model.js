@@ -6,21 +6,21 @@ const model = tf.sequential();
 // adds each layer specified in the config to the model
 tensorflow.model.layers.forEach(layer => {
 	switch (layer.type) {
-		case "conv2d":
+		case 'conv2d':
 			model.add(tf.layers.conv2d(layer));
 			break;
-		case "maxPooling2d":
+		case 'maxPooling2d':
 			model.add(tf.layers.maxPooling2d(layer));
 			break;
-		case "flatten":
+		case 'flatten':
 			model.add(tf.layers.flatten());
 			model.add(tf.layers.dropout(layer.dropout));
 			break;
-		case "dense":
+		case 'dense':
 			model.add(tf.layers.dense(layer));
 			model.add(tf.layers.dropout(layer.dropout));
 			break;
-		case "result":
+		case 'result':
 			model.add(tf.layers.dense(layer));
 			break;
 	}

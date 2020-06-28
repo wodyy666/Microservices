@@ -1,10 +1,9 @@
 const runner = require('../helpers/runner');
 
 function handleTrainModel(req, res) {
-	if(runner.isTraining) {	// is already training
+	if (runner.training()) {	// is already training
 		res.sendStatus(503);
-	}
-	else {
+	} else {
 		runner.trainModel();
 		res.sendStatus(200);
 	}
@@ -12,6 +11,8 @@ function handleTrainModel(req, res) {
 
 function handlePredict(req, res) {
 	let image = req.body.image;
+
+	// run prediction and send result as answer
 	runner.runModel(image, result => {
 		res.send(result);
 	});
@@ -19,5 +20,5 @@ function handlePredict(req, res) {
 
 module.exports = {
 	handleTrainModel,
-	handlePredict
-}
+	handlePredict,
+};

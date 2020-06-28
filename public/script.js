@@ -50,12 +50,18 @@ function erase() {
 async function prepareImageArray() {
 	return await new Promise(async resolve => {
 		var array = new Float32Array(28 * 28);
-		for (var y = 0; y < 140; y += 5) {
-			for (var x = 0; x < 140; x += 5) {
+
+		for (var y = 0; y < 140; y += 5) { // iterate over all rows
+
+			for (var x = 0; x < 140; x += 5) { // iterate over all columns
+
+				// read 5x5 field
 				var tempArray = ctx.getImageData(x, y, 5, 5).
 					data.
 					toString().
 					split(',');
+
+				// add up all pixel values
 				var sum = await new Promise(resolve => {
 					var sum = 0;
 					for (var i = 0; i < 25; i++) {
@@ -63,6 +69,8 @@ async function prepareImageArray() {
 					}
 					resolve(sum);
 				});
+
+				// calculate average and normalize
 				array[((y / 5) * 28) + (x / 5)] = sum / 25 / 255;
 			}
 		}

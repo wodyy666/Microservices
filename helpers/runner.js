@@ -4,12 +4,14 @@ const data = require('./data');
 const definedModel = require('./model');
 const tensorflowConfig = require('../config/tensorflow');
 
-let isTraining = false;
+let isTraining = false; // prevents two models training at the same time
 
+// runs an image through the model
 async function runModel(array, callback) {
-	tf.loadLayersModel(
-		'file://C:/Users/limbamar/OneDrive - diconium GmbH/Desktop/Microservices/model/model.json').
+	tf.loadLayersModel(`file://${path.join(__dirname, "..", tensorflowConfig.modelPath)}`).
 		then(async model => {
+
+			// create typed array containing image data
 			var typedArray = await new Promise(resolve => {
 				var tempArray = new Float32Array(784);
 				tempArray.set(array.slice());
@@ -17,11 +19,13 @@ async function runModel(array, callback) {
 				resolve(tempArray);
 			});
 
+			// feed array into model
 			const imagesShape = [1, 28, 28, 1];
 			let resultTensor = model.predict(
 				tf.tensor4d(typedArray, imagesShape));
 			let resultArray = await resultTensor.array();
 
+			// return result using callback
 			callback(resultArray[0]);
 		});
 }
@@ -57,6 +61,7 @@ async function trainModel() {
 		`  Loss = ${evalOutput[0].dataSync()[0].toFixed(3)}; ` +
 		`Accuracy = ${evalOutput[1].dataSync()[0].toFixed(3)}`);
 
+	// saving the model
 	if (tensorflowConfig.modelPath != null) {
 		let filePath = path.join(__dirname, "..", tensorflowConfig.modelPath);
 		await definedModel.save(`file://${filePath}`);

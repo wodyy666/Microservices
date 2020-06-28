@@ -12,6 +12,8 @@ function handleTrainModel(req, res) {
 
 function handlePredict(req, res) {
 	let image = req.body.image;
+
+	// run prediction and send result as answer
 	runner.runModel(image, result => {
 		res.send(result);
 	});
@@ -20,4 +22,4 @@ function handlePredict(req, res) {
 module.exports = {
 	handleTrainModel,
 	handlePredict
-}
+};

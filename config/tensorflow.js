@@ -1,7 +1,7 @@
 var config = {};
 
 config = {
-	modelPath: './model',
+	modelPath: './model/model.json',
 	epochs: 10,
 	batchSize: 128
 };

@@ -1,7 +1,7 @@
 const runner = require('../helpers/runner');
 
 function handleTrainModel(req, res) {
-	if(runner.isTraining) {	// is already training
+	if(runner.training()) {	// is already training
 		res.sendStatus(503);
 	}
 	else {

@@ -12,7 +12,7 @@ Die Anwendung nutzt den Port 3000. Falls dieser Port bereits belegt ist, ist es 
 Mit dem Befehl ```npm start``` kann diese Anwendung gestartet werden. Das machine learning Modell wurde bereits trainiert und kann deshalb direkt genutzt werden.
 
 ## Verwenden / Testen
-Die Anwendung sollte jetzt lokal auf dem Rechner laufen. Mit dem Browser kann man sie jetzt unter diesem Link aufrufen: http://127.0.0.1:3000/
+Die Anwendung sollte jetzt lokal auf dem Rechner laufen. Mit dem Browser kann man jetzt die Anwendung unter diesem Link aufrufen: http://127.0.0.1:3000/
 Auf der Website kann man...
 - mit seiner Maus in dem weißen Fenster eine Ziffer zeichnen. 
 - mit dem Knopf "clear" das gezeichnete wieder löschen. 

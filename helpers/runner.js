@@ -8,7 +8,8 @@ let isTraining = false; // prevents two models training at the same time
 
 // runs an image through the model
 async function runModel(array, callback) {
-	tf.loadLayersModel(`file://${path.join(__dirname, "..", tensorflowConfig.modelPath)}`).
+	tf.loadLayersModel(
+		`file://${path.join(__dirname, '..', tensorflowConfig.modelPath)}`).
 		then(async model => {
 
 			// create typed array containing image data
@@ -63,7 +64,7 @@ async function trainModel() {
 
 	// saving the model
 	if (tensorflowConfig.modelPath != null) {
-		let filePath = path.join(__dirname, "..", tensorflowConfig.modelPath);
+		let filePath = path.join(__dirname, '..', tensorflowConfig.modelPath);
 		await definedModel.save(`file://${filePath}`);
 		console.log(`Saved model to path: ${filePath}`);
 	}

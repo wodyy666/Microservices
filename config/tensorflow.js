@@ -3,7 +3,7 @@ var config = {};
 config = {
 	modelPath: './model/model.json',
 	epochs: 10,
-	batchSize: 128
+	batchSize: 128,
 };
 
 config.data = {
@@ -19,7 +19,7 @@ config.data = {
 	imageHeaderSize: 16,
 	labelHeaderSize: 8,
 	labelSize: 1,
-	labelCount: 10
+	labelCount: 10,
 };
 
 config.model = {
@@ -29,49 +29,49 @@ config.model = {
 			inputShape: [28, 28, 1],
 			filters: 16,
 			kernelSize: 3,
-			activation: 'relu'
+			activation: 'relu',
 		},
 		{
 			type: 'conv2d',
 			filters: 16,
 			kernelSize: 3,
-			activation: 'relu'
+			activation: 'relu',
 		},
 		{
 			type: 'maxPooling2d',
-			poolSize: [2, 2]
+			poolSize: [2, 2],
 		},
 		{
 			type: 'conv2d',
 			filters: 32,
 			kernelSize: 3,
-			activation: 'relu'
+			activation: 'relu',
 		},
 		{
 			type: 'maxPooling2d',
-			poolSize: [2, 2]
+			poolSize: [2, 2],
 		},
 		{
 			type: 'flatten',
-			dropout: 0.25
+			dropout: 0.25,
 		},
 		{
 			type: 'dense',
 			units: 32,
 			activation: 'relu',
-			dropout: 0.5
+			dropout: 0.5,
 		},
 		{
 			type: 'result',
 			units: 10,
-			activation: 'softmax'
-		}
+			activation: 'softmax',
+		},
 	],
 	compileOptions: {
 		optimizer: 'rmsprop',
 		loss: 'categoricalCrossentropy',
-		metrics: ['accuracy']
-	}
+		metrics: ['accuracy'],
+	},
 };
 
 module.exports = config;
